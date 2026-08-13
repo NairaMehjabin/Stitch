@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@scanner/*": ["scanner/*"],
+      "@utils/*": ["utils/*"],
+      "@fixer/*": ["fixer/*"]
+    }
+  },
+  "include": ["cli/**/*.ts", "scanner/**/*.ts", "fixer/**/*.ts", "utils/**/*.ts"]
+}

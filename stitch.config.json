@@ -1,0 +1,4 @@
+{
+  "scan": ["."],
+  "exclude": ["**/node_modules/**", "**/dist/**"]
+}
