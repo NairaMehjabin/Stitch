@@ -1,15 +1,46 @@
 {
   "name": "stitch-code",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Detect naming drift. Repair it safely.",
-  "license": "ISC",
+  "main": "dist/cli/stitch.js",
+  "type": "commonjs",
+  "bin": {
+    "stitch": "dist/cli/stitch.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
+    "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "prepack": "npm run build",
     "scan": "tsx cli/stitch.ts scan",
     "fix": "tsx cli/stitch.ts fix",
     "dups": "tsx cli/stitch.ts dups",
-    "fix:dups": "tsx cli/stitch.ts fix dups",
     "stitch": "tsx cli/stitch.ts"
   },
+  "keywords": [
+    "typescript",
+    "cli",
+    "code-quality",
+    "naming",
+    "ast",
+    "ts-morph"
+  ],
+  "author": "Naira Mehjabin",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NairaMehjabin/stitch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NairaMehjabin/stitch/issues"
+  },
+  "homepage": "https://github.com/NairaMehjabin/stitch#readme",
   "dependencies": {
     "@inquirer/prompts": "^7.0.0",
     "commander": "^14.0.0",
@@ -17,14 +48,8 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "tsc-alias": "^1.8.0",
     "tsx": "^4.0.0",
     "typescript": "^5.0.0"
-  },
-
-  "description": "",
-  "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  }
 }
