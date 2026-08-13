@@ -1,7 +1,6 @@
 {
   "name": "stitch-code",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
   "scripts": {
     "scan": "tsx cli/stitch.ts scan",
     "fix": "tsx cli/stitch.ts fix",
