@@ -14,5 +14,10 @@
       "@fixer/*": ["fixer/*"]
     }
   },
-  "include": ["cli/**/*.ts", "scanner/**/*.ts", "fixer/**/*.ts", "utils/**/*.ts"]
+  "include": [
+    "cli/**/*.ts",
+    "scanner/**/*.ts",
+    "fixer/**/*.ts",
+    "utils/**/*.ts"
+  ]
 }

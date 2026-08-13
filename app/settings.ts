@@ -1,4 +1,4 @@
 interface Settings {
-  user_name: string;
+  username: string;
   createdAt: string;
 }

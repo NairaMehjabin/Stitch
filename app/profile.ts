@@ -1,4 +1,4 @@
 interface Profile {
-  user_name: string;
+  username: string;
   createdAt: string;
 }

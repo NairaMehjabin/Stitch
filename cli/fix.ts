@@ -7,7 +7,6 @@ import {
   createRenamePlan,
   PropertyRename
 } from "../fixer/interfacePropertyFixer";
-import { runDuplicateRepair } from "./dups";
 import {
   detectNamingDrift,
   NamingDriftGroup
@@ -18,6 +17,7 @@ import {
 } from "../scanner/fileLoader";
 import { loadProject } from "../scanner/projectLoader";
 import { normalizePath } from "../utils/normalizePath";
+import { runDuplicateRepair } from "./fixDups";
 
 function displayPath(filePath: string): string {
   return normalizePath(relative(process.cwd(), filePath));
@@ -133,6 +133,6 @@ export function registerFixCommand(program: Command): void {
 
   fixCommand
     .command("dups")
-    .description("Find and repair duplicate concepts in interfaces")
+    .description("Repair duplicate concepts in interfaces")
     .action(runDuplicateRepair);
 }

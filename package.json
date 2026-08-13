@@ -6,6 +6,7 @@
     "scan": "tsx cli/stitch.ts scan",
     "fix": "tsx cli/stitch.ts fix",
     "dups": "tsx cli/stitch.ts dups",
+    "fix:dups": "tsx cli/stitch.ts fix dups",
     "stitch": "tsx cli/stitch.ts"
   },
   "dependencies": {

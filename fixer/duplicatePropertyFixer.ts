@@ -1,51 +1,89 @@
 import { PropertySignature } from "ts-morph";
 import { DuplicateConceptGroup } from "../scanner/duplicateConceptDetector";
+import { normalizeProperty } from "../utils/normalizeProperty";
 
 export interface DuplicatePropertyRemoval {
   declaration: PropertySignature;
   filePath: string;
   lineNumber: number;
-  propertyName: string;
   propertyText: string;
-  keptPropertyName: string;
-  keptPropertyText: string;
 }
 
-export function createDuplicateRemovalPlan(
+export interface DuplicateRepairPlan {
+  canonicalName: string;
+  keptDeclaration: PropertySignature;
+  keptFilePath: string;
+  keptLineNumber: number;
+  oldKeptName: string;
+  removals: DuplicatePropertyRemoval[];
+}
+
+function getPropertyKey(property: PropertySignature): string {
+  return `${property.getSourceFile().getFilePath()}:${property.getStart()}`;
+}
+
+export function createDuplicateRepairPlan(
   group: DuplicateConceptGroup,
-  keptPropertyName: string
-): DuplicatePropertyRemoval[] {
+  canonicalName: string
+): DuplicateRepairPlan {
   if (!group.typesMatch) {
     throw new Error(
-      "Cannot remove duplicate properties because their types are different."
+      "Cannot repair duplicate properties because their types are different."
     );
   }
 
-  const keptProperty = group.properties.find(
-    (property) => property.propertyName === keptPropertyName
-  );
-
-  if (!keptProperty) {
-    throw new Error("The property selected to keep is not in this group.");
+  if (normalizeProperty(canonicalName) !== group.normalizedName) {
+    throw new Error(
+      "The selected canonical name does not match this duplicate concept."
+    );
   }
 
-  return group.properties
-    .filter((property) => property.propertyName !== keptPropertyName)
-    .map((property) => ({
+  const duplicatePropertyKeys = new Set(
+    group.properties.map((property) => getPropertyKey(property.declaration))
+  );
+
+  const conflictingProperty = group.interfaceDeclaration
+    .getProperties()
+    .find(
+      (property) =>
+        property.getName() === canonicalName &&
+        !duplicatePropertyKeys.has(getPropertyKey(property))
+    );
+
+  if (conflictingProperty) {
+    throw new Error(
+      `Cannot use "${canonicalName}" because it already exists separately in interface "${group.interfaceName}".`
+    );
+  }
+
+  // Keep the first declaration. It is renamed through ts-morph if needed.
+  const keptProperty = group.properties[0];
+
+  return {
+    canonicalName,
+    keptDeclaration: keptProperty.declaration,
+    keptFilePath: keptProperty.filePath,
+    keptLineNumber: keptProperty.lineNumber,
+    oldKeptName: keptProperty.propertyName,
+    removals: group.properties.slice(1).map((property) => ({
       declaration: property.declaration,
       filePath: property.filePath,
       lineNumber: property.lineNumber,
-      propertyName: property.propertyName,
-      propertyText: property.propertyText,
-      keptPropertyName,
-      keptPropertyText: keptProperty.propertyText
-    }));
+      propertyText: property.propertyText
+    }))
+  };
 }
 
-export function applyDuplicateRemovalPlan(
-  removalPlan: DuplicatePropertyRemoval[]
-): void {
-  for (const removal of removalPlan) {
+export function applyDuplicateRepairPlan(plan: DuplicateRepairPlan): void {
+  // Remove siblings first. This avoids temporarily creating two declarations
+  // with the same name if the canonical name is already in the duplicate group.
+  for (const removal of plan.removals) {
     removal.declaration.remove();
+  }
+
+  if (plan.oldKeptName !== plan.canonicalName) {
+    plan.keptDeclaration.set({
+      name: plan.canonicalName
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { relative } from "node:path";
-import { NamingDriftGroup } from "@scanner/driftDetector";
-import { normalizePath } from "@utils/normalizePath";
+import { NamingDriftGroup } from "../scanner/driftDetector";
+import { normalizePath } from "../utils/normalizePath";
 
 function displayPath(filePath: string): string {
   return normalizePath(relative(process.cwd(), filePath));
@@ -10,7 +10,7 @@ export function printShortReport(groups: NamingDriftGroup[]): void {
   console.log("🧵 Stitch Report\n");
 
   if (groups.length === 0) {
-    console.log("No potential naming drift found.");
+    console.log("No naming drift found.");
     return;
   }
 
@@ -27,14 +27,16 @@ export function printShortReport(groups: NamingDriftGroup[]): void {
     console.log("\n--------------------------------\n");
   }
 
-  console.log(`${groups.length} drift group${groups.length === 1 ? "" : "s"} found.`);
+  console.log(
+    `${groups.length} drift group${groups.length === 1 ? "" : "s"} found.`
+  );
 }
 
 export function printVerboseReport(groups: NamingDriftGroup[]): void {
   console.log("🧵 Stitch Detailed Report\n");
 
   if (groups.length === 0) {
-    console.log("No potential naming drift found.");
+    console.log("No naming drift found.");
     return;
   }
 
@@ -49,9 +51,7 @@ export function printVerboseReport(groups: NamingDriftGroup[]): void {
     console.log("\nOccurrences:\n");
 
     for (const occurrence of group.occurrences) {
-      console.log(
-        `${displayPath(occurrence.filePath)}:${occurrence.lineNumber}\n`
-      );
+      console.log(`${displayPath(occurrence.filePath)}:${occurrence.lineNumber}\n`);
       console.log(`Interface:\n${occurrence.interfaceName}\n`);
       console.log(`Property:\n${occurrence.propertyName}\n`);
     }
@@ -59,5 +59,26 @@ export function printVerboseReport(groups: NamingDriftGroup[]): void {
     console.log("--------------------------------\n");
   }
 
-  console.log(`${groups.length} drift group${groups.length === 1 ? "" : "s"} found.`);
+  console.log(
+    `${groups.length} drift group${groups.length === 1 ? "" : "s"} found.`
+  );
+}
+
+export function printDuplicateConceptWarning(
+  duplicateGroupCount: number
+): void {
+  if (duplicateGroupCount === 0) {
+    return;
+  }
+
+  console.log("\n⚠ Duplicate Concepts Detected\n");
+  console.log(
+    `${duplicateGroupCount} duplicate concept group${
+      duplicateGroupCount === 1 ? "" : "s"
+    } found.`
+  );
+
+  console.log("\nRun:");
+  console.log("npm run dups");
+  console.log("\nto inspect and repair duplicate properties.");
 }
