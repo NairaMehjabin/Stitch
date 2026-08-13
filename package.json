@@ -1,6 +1,8 @@
 {
   "name": "stitch-code",
   "version": "1.0.0",
+  "description": "Detect naming drift. Repair it safely.",
+  "license": "ISC",
   "scripts": {
     "scan": "tsx cli/stitch.ts scan",
     "fix": "tsx cli/stitch.ts fix",
