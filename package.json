@@ -1,6 +1,6 @@
 {
   "name": "stitch-code",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Detect naming drift. Repair it safely.",
   "main": "dist/cli/stitch.js",
   "type": "commonjs",
