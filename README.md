@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="#features">Features</a> ·
   <a href="#installation">Installation</a> ·
+  <a href="#quick-start">Quick Start</a> ·
   <a href="#usage">Usage</a> ·
   <a href="#safety">Safety</a> ·
   <a href="#roadmap">Roadmap</a>
@@ -29,7 +29,87 @@
 > ⚠️ **Current scope**  
 > Stitch currently analyzes and modifies **TypeScript interface property declarations only**. It does not rename runtime usages, variables, functions, comments, strings, or JSON files.
 
-## ✨ Features
+## Installation
+
+Install Stitch globally:
+
+```bash
+npm install -g stitch-code
+```
+
+Verify the installation:
+
+```bash
+stitch --help
+```
+
+### Requirements
+
+- Node.js 18+
+- A TypeScript project
+- `tsconfig.json` in the target project root
+- `stitch.config.json` in the target project root
+
+## Quick Start
+
+### 1. Install Stitch
+
+```bash
+npm install -g stitch-code
+```
+
+### 2. Navigate to your TypeScript project
+
+```bash
+cd my-project
+```
+
+### 3. Create `stitch.config.json`
+
+```json
+{
+  "scan": ["frontend", "backend"],
+  "exclude": ["**/node_modules/**", "**/dist/**"]
+}
+```
+
+`frontend` and `backend` are examples only. Replace them with the folders that contain source code in your project.
+
+For example:
+
+```json
+{
+  "scan": ["client", "server", "shared"],
+  "exclude": ["**/node_modules/**", "**/dist/**"]
+}
+```
+
+Or for a monorepo:
+
+```json
+{
+  "scan": ["apps", "packages", "core", "shared"],
+  "exclude": ["**/node_modules/**", "**/dist/**"]
+}
+```
+
+If your project has multiple source folders, list every relevant folder in `scan`.
+
+> ⚠️ **Run Stitch from the project root**  
+> Every Stitch command must run from the folder containing both:
+>
+> - `tsconfig.json`
+> - `stitch.config.json`
+>
+> Stitch will fail if either file is missing.
+
+### 4. Run a scan
+
+```bash
+stitch scan
+```
+
+## Features
 
 | Feature | Description |
 | --- | --- |
@@ -45,7 +125,32 @@
 | ⚠️ Type mismatch protection | Refuses automatic duplicate cleanup when equivalent properties use different types. |
 | 🛡️ Preview-first edits | Shows proposed renames, deletions, totals, and warnings before requiring confirmation. |
 
-## 📸 Preview
+## Usage
+
+### Global CLI usage
+
+Use these commands after installing Stitch globally:
+
+| Command | Description |
+| --- | --- |
+| `stitch scan` | Detect property naming drift. |
+| `stitch scan --verbose` | Show a detailed naming-drift report. |
+| `stitch fix` | Repair naming drift interactively. |
+| `stitch dups` | Diagnose duplicate concepts without modifying files. |
+| `stitch fix dups` | Repair duplicate concepts interactively. |
+
+### Development usage
+
+When working inside the Stitch repository itself:
+
+| Command | Description |
+| --- | --- |
+| `npm run scan` | Run the naming-drift scan. |
+| `npm run fix` | Run naming-drift repair. |
+| `npm run dups` | Run read-only duplicate diagnosis. |
+| `npm run fix -- dups` | Run duplicate-concept repair. |
+
+## Preview
 
 ### Naming-drift detection
 
@@ -63,74 +168,9 @@
 
 ![Stitch duplicate repair](./assets/stitch-fix-dups.png)
 
-> Stitch is intentionally interactive.
-> Try the commands yourself to explore canonical-name selection,
-> preview workflows, warnings, and repair strategies.
+> Stitch is intentionally interactive. Run the commands to explore canonical-name selection, preview workflows, warnings, and repair strategies.
 
-## 📦 Installation
-
-```bash
-git clone https://github.com/NairaMehjabin/stitch.git
-cd stitch
-npm install
-```
-
-### Requirements
-
-- Node.js 18+
-- A TypeScript project containing `.ts` or `.tsx` files
-
-## ⚡ Quick Start
-
-```bash
-npm install
-npm run scan
-npm run fix
-npm run dups
-npm run fix -- dups
-```
-
-Create `stitch.config.json` in the project root:
-
-```json
-{
-  "scan": ["."],
-  "exclude": ["**/node_modules/**", "**/dist/**"]
-}
-```
-
-`"."` scans all TypeScript and TSX files below the current directory.
-
-For a monorepo or selected project folders:
-
-```json
-{
-  "scan": ["apps", "packages", "shared"],
-  "exclude": ["**/node_modules/**", "**/dist/**"]
-}
-```
-
-## 🚀 Usage
-
-| Command | Purpose | Modifies files? |
-| --- | --- | --- |
-| `npm run scan` | Detect property naming drift. | No |
-| `npm run stitch -- scan --verbose` | Show detailed naming-drift occurrences. | No |
-| `npm run fix` | Repair naming drift interactively. | Only after confirmation |
-| `npm run dups` | Diagnose duplicate concepts inside interfaces. | No |
-| `npm run fix -- dups` | Repair duplicate concepts interactively. | Only after confirmation |
-
-Direct CLI commands:
-
-```bash
-stitch scan
-stitch scan --verbose
-stitch fix
-stitch dups
-stitch fix dups
-```
-
-## 🔎 Naming Drift
+## Naming Drift
 
 Stitch finds normalized-equivalent property names used across different interfaces or files.
 
@@ -149,7 +189,7 @@ interface Settings {
 ```
 
 ```bash
-npm run scan
+stitch scan
 ```
 
 ```text
@@ -170,7 +210,7 @@ app/settings.ts:2
 ### Detailed report
 
 ```bash
-npm run stitch -- scan --verbose
+stitch scan --verbose
 ```
 
 ```text
@@ -193,10 +233,10 @@ Property:
 userName
 ```
 
-## ✏️ Repair Naming Drift
+## Repair Naming Drift
 
 ```bash
-npm run fix
+stitch fix
 ```
 
 ```text
@@ -225,7 +265,7 @@ Affected files: 1
 
 Stitch applies changes only after explicit confirmation.
 
-## 🧩 Duplicate Concepts
+## Duplicate Concepts
 
 Duplicate concepts are properties inside the **same interface** that normalize to the same concept.
 
@@ -240,7 +280,7 @@ interface Settings {
 ### Diagnose duplicates
 
 ```bash
-npm run dups
+stitch dups
 ```
 
 ```text
@@ -261,17 +301,17 @@ These properties appear to represent the same concept inside the same interface.
 1 duplicate concept group found.
 
 Run:
-npm run fix -- dups
+stitch fix dups
 
 to repair duplicate concepts.
 ```
 
 `dups` is read-only. It never prompts or modifies files.
 
-## 🛠️ Repair Duplicate Concepts
+## Repair Duplicate Concepts
 
 ```bash
-npm run fix -- dups
+stitch fix dups
 ```
 
 Stitch scans the configured project for every spelling of the same normalized property concept.
@@ -367,14 +407,14 @@ If a non-recommended canonical name is selected:
 Keeping "userName" may create naming inconsistencies.
 
 Run:
-npm run scan
+stitch scan
 
 to diagnose naming drift.
 ```
 
-The warning is advisory. Developers always retain final control.
+The warning is advisory. Developers retain final control.
 
-## ⚠️ Type Safety
+## Type Safety
 
 Stitch does not automatically repair duplicate concepts when types differ.
 
@@ -396,7 +436,42 @@ userName: number
 No automatic fix available.
 ```
 
-## 🏗️ Architecture
+## Troubleshooting
+
+### Missing `stitch.config.json`
+
+```text
+ENOENT: stitch.config.json
+```
+
+Run Stitch from the project root and create a `stitch.config.json` file there.
+
+```bash
+cd my-project
+```
+
+```json
+{
+  "scan": ["src"],
+  "exclude": ["**/node_modules/**", "**/dist/**"]
+}
+```
+
+### Missing `tsconfig.json`
+
+```text
+File not found: tsconfig.json
+```
+
+Run Stitch from the TypeScript project root. If the project does not have a TypeScript configuration file yet, create one:
+
+```bash
+npx tsc --init
+```
+
+Then run Stitch again from that same directory.
+
+## Architecture
 
 ```text
 stitch/
@@ -434,7 +509,7 @@ dups → report same-interface duplicates
 fix dups → choose canonical name, preview, confirm, repair
 ```
 
-## 🛡️ Safety
+## Safety
 
 Stitch is intentionally conservative.
 
@@ -449,7 +524,7 @@ Stitch is intentionally conservative.
 - Blocks duplicate cleanup when property types differ.
 - Blocks canonical-name repair if it would create a separate duplicate property in the same interface.
 
-## 💡 Why Stitch?
+## Why Stitch?
 
 Naming drift happens naturally during refactors, team collaboration, and AI-assisted development:
 
@@ -459,7 +534,7 @@ user_name
 username
 ```
 
-Those differences make code harder to search, maintain, and standardize.
+These differences make code harder to search, maintain, and standardize.
 
 Stitch separates two related but distinct problems:
 
@@ -468,76 +543,76 @@ Stitch separates two related but distinct problems:
 
 It makes both visible, then offers narrowly scoped, reviewable, AST-safe repairs.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [Node.js](https://nodejs.org/)
 - [Commander.js](https://github.com/tj/commander.js)
 - [ts-morph](https://ts-morph.com/)
-- [Inquirer](https://github.com/SBoudrias/Inquirer.js) 
- 
-## 🗺️ Roadmap 
- 
-### Implemented 
- 
-- [x] Interface-property naming-drift detection 
-- [x] Compact naming-drift reports 
-- [x] Verbose naming-drift reports 
-- [x] Interactive naming-drift repair 
-- [x] Preview and confirmation workflow 
-- [x] Duplicate concept diagnosis 
-- [x] Read-only `dups` command 
-- [x] Project-wide canonical-variant counting 
-- [x] Canonical-name selection for duplicate repair 
-- [x] AST-based renaming and duplicate deletion 
-- [x] Type mismatch protection 
-- [x] Naming-drift warnings for non-recommended choices 
- 
-### Planned 
- 
-- [ ] Configurable naming-convention preferences 
-- [ ] Variable naming-drift detection 
-- [ ] Function naming-drift detection 
-- [ ] Type alias consistency checks 
-- [ ] Enum consistency checks 
-- [ ] Project-wide property usage refactors 
-- [ ] Safer cross-file reference updates 
-- [ ] VS Code extension 
-- [ ] CI/CD integration 
-- [ ] GitHub Actions integration 
-- [ ] Team-wide consistency enforcement 
- 
-> Roadmap items are plans only; they are not currently implemented. 
- 
-## 🤝 Contributing 
- 
-Contributions, bug reports, and ideas are welcome. 
- 
-1. Fork the repository. 
-2. Create a focused branch. 
-3. Make your change. 
-4. Test the relevant CLI commands. 
-5. Open a pull request with a clear description. 
- 
-Please preserve Stitch’s core principle: 
- 
-> **Safety before convenience.** 
- 
-## 📄 License 
- 
-This project is licensed under the ISC License. See [LICENSE](./LICENSE) for details. 
- 
-## 👤 Author 
- 
-**Naira Mehjabin** 
- 
+- [Inquirer](https://github.com/SBoudrias/Inquirer.js)
+
+## Roadmap
+
+### Implemented
+
+- [x] Interface-property naming-drift detection
+- [x] Compact naming-drift reports
+- [x] Verbose naming-drift reports
+- [x] Interactive naming-drift repair
+- [x] Preview and confirmation workflow
+- [x] Duplicate concept diagnosis
+- [x] Read-only `dups` command
+- [x] Project-wide canonical-variant counting
+- [x] Canonical-name selection for duplicate repair
+- [x] AST-based renaming and duplicate deletion
+- [x] Type mismatch protection
+- [x] Naming-drift warnings for non-recommended choices
+
+### Planned
+
+- [ ] Configurable naming-convention preferences
+- [ ] Variable naming-drift detection
+- [ ] Function naming-drift detection
+- [ ] Type alias consistency checks
+- [ ] Enum consistency checks
+- [ ] Project-wide property usage refactors
+- [ ] Safer cross-file reference updates
+- [ ] VS Code extension
+- [ ] CI/CD integration
+- [ ] GitHub Actions integration
+- [ ] Team-wide consistency enforcement
+
+> Roadmap items are plans only; they are not currently implemented.
+
+## Contributing
+
+Contributions, bug reports, and ideas are welcome.
+
+1. Fork the repository.
+2. Create a focused branch.
+3. Make your change.
+4. Test the relevant CLI commands.
+5. Open a pull request with a clear description.
+
+Please preserve Stitch’s core principle:
+
+> **Safety before convenience.**
+
+## License
+
+This project is licensed under the ISC License. See [LICENSE](./LICENSE) for details.
+
+## Author
+
+**Naira Mehjabin**
+
 - Portfolio: [st4rligh7.vercel.app](https://st4rligh7.vercel.app)
-- GitHub: [@NairaMehjabin](https://github.com/NairaMehjabin) 
+- GitHub: [@NairaMehjabin](https://github.com/NairaMehjabin)
 - Fiverr: [@naira_mehjabin](https://www.fiverr.com/s/99m680a)
-- Email: nairamehjabin2014@gmail.com 
- 
---- 
- 
-<p align="center"> 
-  Built for cleaner, more consistent TypeScript codebases. 🧵 
+- Email: nairamehjabin2014@gmail.com
+
+---
+
+<p align="center">
+  Built for cleaner, more consistent TypeScript codebases. 🧵
 </p>
