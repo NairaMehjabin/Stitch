@@ -120,7 +120,7 @@ stitch scan
 | 🧩 Duplicate concept detection | Finds properties with equivalent normalized names inside the same interface. |
 | 🔍 Read-only duplicate diagnostics | `dups` reports duplicate groups without prompting or modifying files. |
 | 🧠 Project-wide canonical suggestions | Duplicate repair counts all project-wide variants and recommends the dominant spelling. |
-| 🛠️ Canonical-name duplicate repair | Lets developers select any project-wide variant as the canonical property name. |
+| 🛠️ Canonical name duplicate repair | Lets developers select any project-wide variant as the canonical property name. |
 | 🗑️ Safe duplicate cleanup | Renames one surviving declaration and removes the other duplicate declarations through the AST. |
 | ⚠️ Type mismatch protection | Refuses automatic duplicate cleanup when equivalent properties use different types. |
 | 🛡️ Preview-first edits | Shows proposed renames, deletions, totals, and warnings before requiring confirmation. |
